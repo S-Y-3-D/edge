@@ -1,0 +1,27 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Build and deploy Edge Impulse Model
+      uses: edgeimpulse/build-deploy@v1
+      id: build-deploy
+      with:
+        project_id: ${{ secrets.PROJECT_ID }}
+        api_key: ${{ secrets.API_KEY }}
+    - name: Extract the Model and SDK
+      run: |
+        mkdir temp
+        unzip -q "${{ steps.build-deploy.outputs.deployment_file_name }}" -d temp
+        mv temp/edge-impulse-sdk/ .
+        mv temp/model-parameters/ .
+        mv temp/tflite-model/ .
+        rm -rf "${{ steps.build-deploy.outputs.deployment_file_name }}"
+        rm -rf temp/
