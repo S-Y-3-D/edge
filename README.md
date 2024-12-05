@@ -1,1 +1,1 @@
-This contains the code of Edge Impulse
+This contains the code
